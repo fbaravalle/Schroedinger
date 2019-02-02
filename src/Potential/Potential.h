@@ -29,7 +29,7 @@
 
 class Potential {
 private:
-    std::vector<double> x;
+    Base base;
     std::vector<double> v;
     std::string type;
 
@@ -44,23 +44,23 @@ private:
 public:
     Potential(std::vector<double>, std::string, double, double, double);
     std::vector<double> getValues();
-    // Base get_x();
+    Base getBase();
 
     class Builder{
         private:
-            std::vector<double> x;
+            Base base;
             std::string type     = "box";
             double k             = 0.5;
             double width         = 5.0;
             double height        = 10.0;
 
         public:
-            Builder(std::vector<double> x_new);
+            Builder(Base b);
             Builder setK(double k_new);
             Builder setWidth(double width_new);
             Builder setHeight(double height_new);
             Builder setType(std::string type);
-            // Builder setBase(Base b);
+            Builder setBase(Base b);
             Potential build();
     };
 };

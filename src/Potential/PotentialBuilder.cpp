@@ -1,8 +1,8 @@
 #include "Potential.h"
 
-Potential::Builder::Builder(std::vector<double> x_new)
+Potential::Builder::Builder(Base b)
 {
-    this->x = x_new;
+    this->base = b;
 }
 
 Potential::Builder Potential::Builder::setK(double k_new)
@@ -37,14 +37,13 @@ Potential::Builder Potential::Builder::setType(std::string type)
 
 Potential Potential::Builder::build(){
     try {
-        return Potential(this->x,this->type,this->k,this->width,this->height);
+        return Potential(this->base,this->type,this->k,this->width,this->height);
     }
     catch(const std::invalid_argument& e){
         throw;
     }
 }
 
-// Potential::Builder Potential::Builder::setBase(Base b)
-// {
-//     this->base = b;
-// }
+Potential::Builder Potential::Builder::setBase(Base b) {
+     this->base = b;
+ }

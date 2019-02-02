@@ -1,13 +1,15 @@
 #include "Potential.h"
 
-Potential::Potential(std::vector<double> coord, std::string type, double k, double width, double height)
+Potential::Potential(Base base, std::string type, double k, double width, double height)
 {
-    this->x        = coord;
-    this->v        = std::vector<double>(x.size());
+    this->base     = base; 
     this->k        = k;
     this->width    = width;
     this->height   = height;
     this->type     = type;
+
+    // The following is hardcoded to work with a base having one continuous dimension. 
+    this->v        = std::vector<double>(base.getContinuous().at(0).getCoords().size);
 
     if(type.compare("box potential") == 0 || type.compare("box") == 0 || type.compare("0") == 0)
         this->box_potential();
