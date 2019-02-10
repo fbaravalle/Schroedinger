@@ -9,7 +9,7 @@ Potential::Potential(Base base, std::string type, double k, double width, double
     this->type     = type;
 
     // The following is hardcoded to work with a base having one continuous dimension. 
-    this->v        = std::vector<double>(base.getContinuous().at(0).getCoords().size);
+    this->v        = std::vector<double>(base.getContinuous().at(0).getCoords().size());
 
     if(type.compare("box potential") == 0 || type.compare("box") == 0 || type.compare("0") == 0)
         this->box_potential();
@@ -24,24 +24,30 @@ Potential::Potential(Base base, std::string type, double k, double width, double
         throw std::invalid_argument("Wrong potential type ("+type+") or initialization meaningless!");
     }
 }
-/*
+
 void Potential::ho_potential()
 {
-    for(std::vector<int>::size_type i = 0; i < x.size(); i++)
+ /*
+ for(std::vector<int>::size_type i = 0; i < x.size(); i++)
         this->v[i] = this->x[i] * this->x[i] * this->k;
+    */
 }
 
 void Potential::box_potential()
 {
-    std::fill(this->v.begin(), this->v.end(), 0.0);
+ //   std::fill(this->v.begin(), this->v.end(), 0.0);
 }
 
 void Potential::finite_well_potential()
 {
+/*
     for(std::vector<int>::size_type i = 0; i < x.size(); i++)
         this->v[i] = (this->x[i] > -this->width/2.0 && this->x[i] < this->width/2.0) ? 0.0 : this->height;
-}
 */
+}
+
+
+
 std::vector<double> Potential::getValues()
 {
     return this->v;

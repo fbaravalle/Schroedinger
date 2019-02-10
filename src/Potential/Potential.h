@@ -42,7 +42,7 @@ private:
     void finite_well_potential();
 
 public:
-    Potential(std::vector<double>, std::string, double, double, double);
+    Potential(Base, std::string, double, double, double);
     std::vector<double> getValues();
     Base getBase();
 
