@@ -24,7 +24,7 @@ Potential::Potential(Base base, std::string type, double k, double width, double
         throw std::invalid_argument("Wrong potential type ("+type+") or initialization meaningless!");
     }
 }
-
+/*
 void Potential::ho_potential()
 {
     for(std::vector<int>::size_type i = 0; i < x.size(); i++)
@@ -41,7 +41,7 @@ void Potential::finite_well_potential()
     for(std::vector<int>::size_type i = 0; i < x.size(); i++)
         this->v[i] = (this->x[i] > -this->width/2.0 && this->x[i] < this->width/2.0) ? 0.0 : this->height;
 }
-
+*/
 std::vector<double> Potential::getValues()
 {
     return this->v;

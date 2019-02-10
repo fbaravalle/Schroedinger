@@ -42,17 +42,15 @@ std::vector<Base> BasisManager::getBasisList(Source s) {
 	return this->bases;
 }
 
-Base BasisManager::Builder::build() {
+Base BasisManager::Builder::build(int dimension) {
 	//TODO: Eventually add controls...
-    int dimension = 0;
-
 	return Base(Base::basePreset::Custom, dimension, c_base, d_base);
 }
 
 Base BasisManager::Builder::build(Base::basePreset b, int dimension) {
     //TODO: Eventually add controls...
-        return Base(b, dimension, c_base, d_base);
-    }
+    return Base(b, dimension, c_base, d_base);
+}
 
 // --- Factory Methods --- //
 Base BasisManager::Builder::build(Base::basePreset b, int dimension, double mesh, int nbox) {
