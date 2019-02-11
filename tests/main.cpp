@@ -9,23 +9,22 @@ double H3(double x) { return 8 * std::pow(x, 3) - 12 * x; }
 
 double H4(double x) { return 16 * std::pow(x, 4) - 48 * x * x + 12; }
 
-void testWf(unsigned int nbox, Potential::PotentialType potType, double k, double width, double height,
-            Base base, std::vector<double> *pot,
-            double *numerov_Wf, double *analytic_Wf) {
+void testWf(unsigned int nbox, Potential::PotentialType potType, double k, 
+            double width, double height, Base base, std::vector<double> &pot, std::vector<double> &numerov_Wf, 
+            std::vector<double> &analytic_Wf) {
     
-
     Potential::Builder b(base);
     Potential V = b.setType(potType)
                     .setK(k)
                     .setHeight(height)
                     .setWidth(width)
                     .build();
+    
+    Numerov solver = Numerov(V, nbox);
+    solver.solve(0.0, 2.0, 0.01);
 
-    *pot = V.getValues();
-    numerov_Wf[0] = 0.0;
-    numerov_Wf[1] = 0.01; //later on it gets renormalized, so is just a conventional number
-
-    double E_numerov = solve_Numerov(0., 2., 0.01, nbox, V, numerov_Wf);
+    numerov_Wf = solver.getWavefunction();
+    double E_numerov = solver.getSolutionEnergy();
     double E_analytic;
 
     switch(potType) {
@@ -44,7 +43,7 @@ void testWf(unsigned int nbox, Potential::PotentialType potType, double k, doubl
     }
 
     for (int i = 0; i < nbox; i++) {
-        EXPECT_NEAR(numerov_Wf[i], analytic_Wf[i], 1e-2); //improve error definition
+        EXPECT_NEAR(numerov_Wf.at(i), analytic_Wf.at(i), 1e-2); //improve error definition
     }
 
     ASSERT_NEAR(E_numerov, E_analytic, 1e-3);
@@ -105,12 +104,12 @@ namespace {
         BasisManager::Builder b;
         Base base = b.build(Base::basePreset::Cartesian, 1, mesh, nbox);
 
-
-        double *numerov_Wf = new double[nbox];
-        double *analytic_Wf = new double[nbox];
+        
+        std::vector<double> numerov_Wf = std::vector<double>(nbox);
+        std::vector<double> analytic_Wf = std::vector<double>(nbox);        
         std::vector<double> pot(nbox);
 
-        testWf(nbox, Potential::PotentialType::HARMONIC_OSCILLATOR, 0.500, 0.0, 0.0, base,  &pot, numerov_Wf, analytic_Wf);
+        testWf(nbox, Potential::PotentialType::HARMONIC_OSCILLATOR, 0.500, 0.0, 0.0, base,  pot, numerov_Wf, analytic_Wf);
 
         if (HasFailure()) {
             for (int i = 0; i < nbox; i++)
@@ -125,12 +124,11 @@ namespace {
         BasisManager::Builder b;
         Base base = b.build(Base::basePreset::Cartesian, 1, mesh, nbox);
 
-        double *numerov_Wf = new double[nbox];
-        double *analytic_Wf = new double[nbox];
-
+        std::vector<double> numerov_Wf = std::vector<double>(nbox);
+        std::vector<double> analytic_Wf = std::vector<double>(nbox);
         std::vector<double> pot(nbox);
 
-        testWf(nbox, Potential::PotentialType::HARMONIC_OSCILLATOR, 1.0, 0.0, 0.0, base, &pot, numerov_Wf, analytic_Wf);
+        testWf(nbox, Potential::PotentialType::HARMONIC_OSCILLATOR, 1.0, 0.0, 0.0, base, pot, numerov_Wf, analytic_Wf);
 
         if (HasFailure()) {
             for (int i = 0; i < nbox; i++)
@@ -146,11 +144,11 @@ namespace {
         BasisManager::Builder b;
         Base base = b.build(Base::basePreset::Cartesian, 1, mesh, nbox);
 
-        double *numerov_Wf = new double[nbox];
-        double *analytic_Wf = new double[nbox];
+        std::vector<double> numerov_Wf = std::vector<double>(nbox);
+        std::vector<double> analytic_Wf = std::vector<double>(nbox);        
         std::vector<double> pot(nbox);
 
-        testWf(nbox, Potential::PotentialType::BOX_POTENTIAL, 0.0, 0.0, 0.0, base, &pot, numerov_Wf, analytic_Wf);
+        testWf(nbox, Potential::PotentialType::BOX_POTENTIAL, 0.0, 0.0, 0.0, base, pot, numerov_Wf, analytic_Wf);
 
         if (HasFailure()) {
             for (int i = 0; i < nbox; i++)
@@ -165,11 +163,11 @@ namespace {
         BasisManager::Builder b;
         Base base = b.build(Base::basePreset::Cartesian, 1, mesh, nbox);
 
-        double *numerov_Wf = new double[nbox];
-        double *analytic_Wf = new double[nbox];
+        std::vector<double> numerov_Wf = std::vector<double>(nbox);
+        std::vector<double> analytic_Wf = std::vector<double>(nbox);        
         std::vector<double> pot(nbox);
 
-        testWf(nbox, Potential::PotentialType::BOX_POTENTIAL, 0.0, 0.0, 0.0, base, &pot, numerov_Wf, analytic_Wf);
+        testWf(nbox, Potential::PotentialType::BOX_POTENTIAL, 0.0, 0.0, 0.0, base, pot, numerov_Wf, analytic_Wf);
 
         if (HasFailure()) {
             for (int i = 0; i < nbox; i++)
@@ -186,11 +184,11 @@ namespace {
         Base base = b.build(x_ini);
 
         double width = 10., height = 3.;
-        double *numerov_Wf = new double[nbox];
-        double *analytic_Wf = new double[nbox];
+        std::vector<double> numerov_Wf = std::vector<double>(nbox);
+        std::vector<double> analytic_Wf = std::vector<double>(nbox);        
         std::vector<double> pot(nbox);
 
-        testWf(nbox, Potential::PotentialType::FINITE_WELL_POTENTIAL, 0., width, height, base, &pot, numerov_Wf, analytic_Wf);
+        testWf(nbox, Potential::PotentialType::FINITE_WELL_POTENTIAL, 0., width, height, base, pot, numerov_Wf, analytic_Wf);
 
         if (HasFailure()) {
             for (int i = 0; i < nbox; i++)
@@ -206,11 +204,11 @@ namespace {
         Base base = b.build(Base::basePreset::Cartesian, 1, mesh, nbox);
 
         double width = 7.0, height = 5.0;
-        double *numerov_Wf = new double[nbox];
-        double *analytic_Wf = new double[nbox];
+        std::vector<double> numerov_Wf = std::vector<double>(nbox);
+        std::vector<double> analytic_Wf = std::vector<double>(nbox);        
         std::vector<double> pot(nbox);
 
-        testWf(nbox, Potential::PotentialType::FINITE_WELL_POTENTIAL, 0.0, width, height, base, &pot, numerov_Wf, analytic_Wf);
+        testWf(nbox, Potential::PotentialType::FINITE_WELL_POTENTIAL, 0.0, width, height, base, pot, numerov_Wf, analytic_Wf);
 
         if (HasFailure()) {
             for (int i = 0; i < nbox; i++)

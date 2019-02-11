@@ -8,7 +8,7 @@
 #include <stdexcept>
 #include <stdbool.h>
 #include <fstream>
-#include "../Basis/Base.h"
+#include <Base.h>
 
 /*! Class Potential contains the potential used in the Schroedinger equation.
  * takes the necessary input: std::vector x at definition Builder(x),
@@ -38,6 +38,7 @@ public:
         FINITE_WELL_POTENTIAL = 2,   
     };
 
+    Potential();
     Potential(Base, PotentialType, double, double, double, bool);
     std::vector<double> getValues();
     std::vector<double> getCoordsFromBase();

@@ -1,5 +1,8 @@
 #include "Potential.h"
 
+Potential::Potential() {
+    throw std::invalid_argument("Can't initialize a potential without specifying parameters");
+}
 Potential::Potential(Base base, PotentialType type, double k, double width, double height, bool separable)
 {
     this->base      = base; 
