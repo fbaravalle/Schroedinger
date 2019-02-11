@@ -28,12 +28,8 @@ Potential::Builder Potential::Builder::setHeight(double height_new)
 
 Potential::Builder Potential::Builder::setType(PotentialType type)
 {   
-    // When you add new potential types in the enum, change this check!
-    if (type >= PotentialType::BOX_POTENTIAL && type <= PotentialType::HARMONIC_OSCILLATOR) {
-        this->type = type;
-        return *this;
-    }
-    else throw std::invalid_argument("Wrong type given as parameter.");
+    this->type = type;
+    return *this;
 }
 
 Potential::Builder Potential::Builder::setSeparable(bool separable)

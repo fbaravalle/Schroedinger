@@ -1,11 +1,10 @@
 #define __STDCPP_WANT_MATH_SPEC_FUNCS__ 1
 
 #include <gtest/gtest.h>
-
 #include <Schroedinger.h>
 #include <BasisManager.h>
+#include <Potential.h>
 #include "test.h"
-
 double H3(double x) { return 8 * std::pow(x, 3) - 12 * x; }
 
 double H4(double x) { return 16 * std::pow(x, 4) - 48 * x * x + 12; }
@@ -14,6 +13,7 @@ void testWf(unsigned int nbox, Potential::PotentialType potType, double k, doubl
             Base base, std::vector<double> *pot,
             double *numerov_Wf, double *analytic_Wf) {
     
+
     Potential::Builder b(base);
     Potential V = b.setType(potType)
                     .setK(k)
@@ -22,7 +22,6 @@ void testWf(unsigned int nbox, Potential::PotentialType potType, double k, doubl
                     .build();
 
     *pot = V.getValues();
-
     numerov_Wf[0] = 0.0;
     numerov_Wf[1] = 0.01; //later on it gets renormalized, so is just a conventional number
 
@@ -111,7 +110,7 @@ namespace {
         double *analytic_Wf = new double[nbox];
         std::vector<double> pot(nbox);
 
-        testWf(nbox, Potential::PotentialType::HARMONIC_OSCILLATOR, 0.500, 0., 0., base,  &pot, numerov_Wf, analytic_Wf);
+        testWf(nbox, Potential::PotentialType::HARMONIC_OSCILLATOR, 0.500, 0.0, 0.0, base,  &pot, numerov_Wf, analytic_Wf);
 
         if (HasFailure()) {
             for (int i = 0; i < nbox; i++)

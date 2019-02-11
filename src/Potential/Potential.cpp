@@ -64,22 +64,25 @@ Potential::Potential(Base base, PotentialType type, double k, double width, doub
 void Potential::ho_potential()
 {
     std::vector<double> x = this->getCoordsFromBase();
- 
+    this->v.reserve(x.size());
     for(std::vector<int>::size_type i = 0; i < x.size(); i++)
-            this->v[i] = x[i] * x[i] * this->k;
+            this->v.push_back(x.at(i) * x.at(i) * this->k);
 }
 
 void Potential::box_potential()
 {
+    this->v = this->getCoordsFromBase();
     std::fill(this->v.begin(), this->v.end(), 0.0);
 }
 
 void Potential::finite_well_potential()
 {
     std::vector<double> x = this->getCoordsFromBase();
-
-    for(std::vector<int>::size_type i = 0; i < x.size(); i++)
-        this->v[i] = (x[i] > -this->width/2.0 && x[i] < this->width/2.0) ? 0.0 : this->height;
+    this->v.reserve(x.size());
+    for(std::vector<int>::size_type i = 0; i < x.size(); i++) {
+        double value = (x.at(i) > -this->width/2.0 && x.at(i) < this->width/2.0) ? 0.0 : this->height;
+        this->v.push_back(value);
+    }
 }
 
 std::vector<double> Potential::getValues()

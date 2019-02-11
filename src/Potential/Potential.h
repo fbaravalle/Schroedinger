@@ -32,9 +32,9 @@ class Potential {
 
 public:
     enum PotentialType {
-        BOX_POTENTIAL,
-        HARMONIC_OSCILLATOR,
-        FINITE_WELL_POTENTIAL,   
+        BOX_POTENTIAL = 0,
+        HARMONIC_OSCILLATOR = 1,
+        FINITE_WELL_POTENTIAL = 2,   
     };
 
     Potential(Base, PotentialType, double, double, double, bool);
