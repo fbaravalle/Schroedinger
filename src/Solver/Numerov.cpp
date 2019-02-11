@@ -1,7 +1,6 @@
-#include "Schroedinger.h"
+#include "Numerov.h"
 
-/*! Integrate with the trapezoidal rule method, from a to b position in a function array
-*/
+/*! Integrate with the trapezoidal rule method, from a to b position in a function array*/
 double trap_array(int a, int b, double stepx, double *func) {
     double trapez_sum = 0.;
 
@@ -13,6 +12,17 @@ double trap_array(int a, int b, double stepx, double *func) {
     return trapez_sum;
 }
 
+void wavefuctionToFile(double *wavefunction) {
+  std::ofstream myfile ("wavefunction.dat");
+  if (myfile.is_open())
+  {
+
+    for(int i = 0; i < sizeof(wavefunction); i ++){
+        myfile << i <<" " << wavefunction[i] << std::endl ;
+    }
+    myfile.close();
+  }
+}
 /*! Numerov Algorithm solves
 f''(x) + v(x)f(x) = 0,
 by considering
@@ -104,6 +114,8 @@ double solve_Numerov(double Emin, double Emax, double Estep,
         wavefunction[i] = wavefunction[i] / sqrt(norm);
     // for (int i = 0; i <= nbox; i++)
     //     std::cout << (-nbox / 2 + i) * dx << "  " << wavefunction[i] << " " << (*potential)((-nbox / 2 + i) * dx) << std::endl;
+
+    wavefuctionToFile(wavefunction);
     return Solution_Energy;
 }
 

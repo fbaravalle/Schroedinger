@@ -1,7 +1,7 @@
 #define __STDCPP_WANT_MATH_SPEC_FUNCS__ 1
 
 #include <gtest/gtest.h>
-#include <Schroedinger.h>
+#include <Numerov.h>
 #include <BasisManager.h>
 #include <Potential.h>
 #include "test.h"

@@ -3,7 +3,7 @@
 #include <BasisManager.h>
 #include <Base.h>
 #include <Potential.h>
-#include <Schroedinger.h>
+#include <Numerov.h>
 
 
 int main(int argc, char **argv) {
