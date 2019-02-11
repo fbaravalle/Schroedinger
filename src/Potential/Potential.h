@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <stdexcept>
 #include <stdbool.h>
+#include <fstream>
 #include "../Basis/Base.h"
 
 /*! Class Potential contains the potential used in the Schroedinger equation.
@@ -41,7 +42,7 @@ public:
     std::vector<double> getValues();
     std::vector<double> getCoordsFromBase();
     Base getBase();
-
+    void printToFile();
     class Builder{
         private:
             Base base;

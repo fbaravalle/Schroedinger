@@ -12,17 +12,6 @@ double trap_array(int a, int b, double stepx, double *func) {
     return trapez_sum;
 }
 
-void wavefuctionToFile(double *wavefunction) {
-  std::ofstream myfile ("wavefunction.dat");
-  if (myfile.is_open())
-  {
-
-    for(int i = 0; i < sizeof(wavefunction); i ++){
-        myfile << i <<" " << wavefunction[i] << std::endl ;
-    }
-    myfile.close();
-  }
-}
 /*! Numerov Algorithm solves
 f''(x) + v(x)f(x) = 0,
 by considering
@@ -110,12 +99,22 @@ double solve_Numerov(double Emin, double Emax, double Estep,
     norm = trap_array(0., nbox, dx, probab);
     std::cout << "# norm=" << norm << std::endl;
 
-    for (int i = 0; i <= nbox; i++)
-        wavefunction[i] = wavefunction[i] / sqrt(norm);
+    std::ofstream myfile ("wavefunction.dat");
+    if (myfile.is_open())
+    {
+
+        for (int i = 0; i <= nbox; i++) {
+            wavefunction[i] = wavefunction[i] / sqrt(norm);
+            myfile << i << " "<< wavefunction[i] << std::endl;
+        }
+        std::cout << std::endl;
+        myfile.close();
+    }
+
+
     // for (int i = 0; i <= nbox; i++)
     //     std::cout << (-nbox / 2 + i) * dx << "  " << wavefunction[i] << " " << (*potential)((-nbox / 2 + i) * dx) << std::endl;
 
-    wavefuctionToFile(wavefunction);
     return Solution_Energy;
 }
 

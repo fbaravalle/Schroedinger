@@ -87,6 +87,7 @@ void Potential::finite_well_potential()
 
 std::vector<double> Potential::getValues()
 {
+    this->printToFile();
     return this->v;
 }
 
@@ -101,4 +102,17 @@ std::vector<double> Potential::getCoordsFromBase()
         return std::vector<double>(original_coords.begin(), original_coords.end());
     }
 }
+
+void Potential::printToFile() {
+  std::ofstream myfile ("potential.dat");
+  if (myfile.is_open())
+  {
+
+    for(int i = 0; i < this->v.size(); i ++){
+        myfile << i <<" " << this->v.at(i)<< std::endl ;
+    }
+    myfile.close();
+  }
+}
+
 
