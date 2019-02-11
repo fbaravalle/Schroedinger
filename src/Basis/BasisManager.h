@@ -1,3 +1,6 @@
+#ifndef BASISMANAGER_H
+#define BASISMANAGER_H
+
 #include <Base.h>
 #include <Initializer.h>
 
@@ -38,3 +41,4 @@ private:
 	static BasisManager* instance;
 	BasisManager() {}
 };
+#endif

@@ -6,6 +6,7 @@
 #include <string>
 #include <algorithm>
 #include <stdexcept>
+#include <stdbool.h>
 #include "../Basis/Base.h"
 
 /*! Class Potential contains the potential used in the Schroedinger equation.
@@ -28,41 +29,55 @@
  */
 
 class Potential {
-private:
-    Base base;
-    std::vector<double> v;
-    std::string type;
-
-    double k;
-    double width;
-    double height;
-
-    void ho_potential();
-    void box_potential();
-    void finite_well_potential();
 
 public:
-    Potential(Base, std::string, double, double, double);
+    enum PotentialType {
+        BOX_POTENTIAL,
+        HARMONIC_OSCILLATOR,
+        FINITE_WELL_POTENTIAL,   
+    };
+
+    Potential(Base, PotentialType, double, double, double, bool);
     std::vector<double> getValues();
+    std::vector<double> getCoordsFromBase();
     Base getBase();
 
     class Builder{
         private:
             Base base;
-            std::string type     = "box";
+            PotentialType type   = PotentialType::BOX_POTENTIAL;
             double k             = 0.5;
             double width         = 5.0;
             double height        = 10.0;
+            bool separable       = false;
+            std::vector<Potential> separated_potentials;
 
         public:
             Builder(Base b);
             Builder setK(double k_new);
             Builder setWidth(double width_new);
             Builder setHeight(double height_new);
-            Builder setType(std::string type);
+            Builder setType(PotentialType type);
             Builder setBase(Base b);
+            Builder setSeparable(bool separable);
             Potential build();
     };
+
+private:
+    Base base;
+    std::vector<double> v;
+    PotentialType type;
+
+    double k;
+    double width;
+    double height;
+    bool separable;
+    std::vector<Potential> separated_potentials;
+
+    void ho_potential();
+    void box_potential();
+    void finite_well_potential();
+
 };
 
 #endif

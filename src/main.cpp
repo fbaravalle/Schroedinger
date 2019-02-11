@@ -30,7 +30,7 @@ int main(int argc, char **argv) {
     builder.addContinuous(start_1, end_2, mesh_2);
     builder.addContinuous(start_2, end_2, mesh_2);
 
-	// Getting a base object, building the previous specified in the basis builder.
+	// Getting a base object, building with the previous specified parameters in the basis builder.
 	// (Specify that the base is Cartesian, passing also the dimension)
 	base = builder.build(Base::basePreset::Cartesian, dimension);
 
@@ -41,21 +41,7 @@ int main(int argc, char **argv) {
 	basis = manager->getBasisList();
 
     // Print basis values for each dimension
-	for (int dimension_counter = 0; dimension_counter < base.getDim(); dimension_counter++) {
-        std::cout << "Dimension: " << dimension_counter+1 << std::endl;
-
-        // Print continuous dimension values (if present)
-        if (base.getContinuous().size() > 0)
-            for (int coord_counter = 0; coord_counter < base.getContinuous().at(dimension_counter).getCoords().size(); coord_counter++)
-                std::cout << base.getContinuous().at(dimension_counter).getCoords().at(coord_counter) << "; ";
-
-        // Print discrete dimension values (if present)
-        if (base.getDiscrete().size() > 0)
-            for (int coord_counter = 0; coord_counter < base.getDiscrete().at(dimension_counter).getCoords().size(); coord_counter++)
-                std::cout << base.getDiscrete().at(dimension_counter).getCoords().at(coord_counter) << "; ";
-
-        std::cout << std::endl << std::endl;
-    }
+	std::cout << base;
 
     return 0;
 }

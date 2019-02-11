@@ -26,18 +26,25 @@ Potential::Builder Potential::Builder::setHeight(double height_new)
     return *this;
 }
 
-Potential::Builder Potential::Builder::setType(std::string type)
-{
-    if (!type.empty()) {
+Potential::Builder Potential::Builder::setType(PotentialType type)
+{   
+    // When you add new potential types in the enum, change this check!
+    if (type >= PotentialType::BOX_POTENTIAL && type <= PotentialType::HARMONIC_OSCILLATOR) {
         this->type = type;
         return *this;
     }
-    else throw std::invalid_argument("Empty type given as parameter.");
+    else throw std::invalid_argument("Wrong type given as parameter.");
+}
+
+Potential::Builder Potential::Builder::setSeparable(bool separable)
+{
+    this->separable = separable;
+
 }
 
 Potential Potential::Builder::build(){
     try {
-        return Potential(this->base,this->type,this->k,this->width,this->height);
+        return Potential(this->base,this->type,this->k,this->width,this->height, this->separable);
     }
     catch(const std::invalid_argument& e){
         throw;
