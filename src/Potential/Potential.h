@@ -44,6 +44,8 @@ public:
     std::vector<double> getCoordsFromBase();
     Base getBase();
     void printToFile();
+    bool isSeparated();
+    std::vector<Potential> getSeparatedPotentials();
     class Builder{
         private:
             Base base;

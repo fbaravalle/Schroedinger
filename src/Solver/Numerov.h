@@ -29,7 +29,8 @@ class Numerov {
                 double solve(double, double, double);
                 void printToFile();
 
-                /*! Integrate with the trapezoidal rule method, from a to b position in a function array*/
+                // Integrate with the trapezoidal rule method, from a to b position in a function array
+                // This is static and public in order to be used by analytical functions outside of this class
                 static double trapezoidalRule(int a, int b, double stepx, std::vector<double> function) {
                         double sum = 0.0;
                         for (int j = a + 1; j < b; j++) 
@@ -41,9 +42,15 @@ class Numerov {
         private:
                 double solutionEnergy;
                 std::vector<double> wavefunction;
+                std::vector<double> tempWavefunction;
                 std::vector<double> probability;
-                void functionSolve(double);
-                double bisection(double, double);
+                void findWavefunction(double, std::vector<double>&);
+                void multiplyWavefunction();
+                double bisection(double, double, std::vector<double>&);
+                double findEnergy(double, double, double, std::vector<double>&);
+                void normalize();
+                std::vector<double> findProbability();
+
 };
 
 #endif

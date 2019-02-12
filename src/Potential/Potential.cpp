@@ -106,6 +106,14 @@ std::vector<double> Potential::getCoordsFromBase()
     }
 }
 
+bool Potential::isSeparated() {
+    return this->separable;
+}
+
+std::vector<Potential> Potential::getSeparatedPotentials() {
+    if (this->separable == true && this->separated_potentials.size() > 0)
+        return this->separated_potentials;
+}
 void Potential::printToFile() {
   std::ofstream myfile ("potential.dat");
   if (myfile.is_open())

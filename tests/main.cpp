@@ -24,9 +24,9 @@ void testWf(unsigned int nbox, Potential::PotentialType potType, double k,
     Numerov solver = Numerov(V, nbox);
     solver.solve(0.0, 2.0, 0.01);
 
-    numerov_Wf = solver.getWavefunction();
-    analytic_Wf = std::vector<double>(numerov_Wf.size()+1);
-    
+    numerov_Wf  = solver.getWavefunction();
+    analytic_Wf = std::vector<double>(numerov_Wf.size());
+
     double E_numerov = solver.getSolutionEnergy();
     double E_analytic;
     
@@ -45,9 +45,12 @@ void testWf(unsigned int nbox, Potential::PotentialType potType, double k,
                 exit(8);
     }
 
-    for (int i = 0; i < nbox; i++) {
-        EXPECT_NEAR(numerov_Wf.at(i), analytic_Wf.at(i), 1e-2); //improve error definition
-    }
+    if (analytic_Wf.size() == numerov_Wf.size())
+        for (int i = 0; i < analytic_Wf.size(); i++) {
+            EXPECT_NEAR(numerov_Wf.at(i), analytic_Wf.at(i), 1e-2); //improve error definition
+        }
+    else   
+        FAIL() << "Analytic wavefunction and Numerov wavefunction haven't the same size " << analytic_Wf.size() << " " << numerov_Wf.size();
 
     ASSERT_NEAR(E_numerov, E_analytic, 1e-3);
 }

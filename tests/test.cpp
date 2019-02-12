@@ -13,7 +13,7 @@ double box_wf(int nlevel, int nbox, std::vector<double> &wavefunction) {
     double E_n  = nlevel * nlevel * pi * pi * hbar * hbar / 2. / mass / boxLength / boxLength;
     double norm = sqrt(2 / boxLength);
 
-    for (int i = 0; i < nbox; i++) {
+    for (int i = 0; i < wavefunction.size(); i++) {
         double x = i * dx;
         double &wavefunction_value = wavefunction.at(i);
         wavefunction_value = norm * sin(nlevel * pi * x / boxLength);
@@ -114,7 +114,7 @@ double finite_well_wf(int nlevel, int nbox, double pot_width, double pot_height,
         probab = wavefunction_value * wavefunction_value;
     }
     double norm = Numerov::trapezoidalRule(0.0, nbox, dx, probability);
-    for (int i = 0; i <= nbox; i++) {
+    for (int i = 0; i < wavefunction.size(); i++) {
         double &wavefunction_value = wavefunction.at(i);
         wavefunction_value /= sqrt(norm);
     }
