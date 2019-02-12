@@ -7,10 +7,11 @@ Numerov::Numerov(Potential potential, int nbox) {
     this->probability    = std::vector<double>(nbox+10);
     this->wavefunction   = std::vector<double>(nbox+10);
 
-    std::fill(wavefunction.begin(), wavefunction.end(), 0);
+    this->wavefunction.insert(this->wavefunction.begin(), 0);
+    this->wavefunction.insert(this->wavefunction.begin()+1, 0.1);
+    this->wavefunction.insert(this->wavefunction.begin()+2, 0.1);
 
-    this->wavefunction.at(0) = 0;
-    this->wavefunction.at(1) = 0.1;
+
 }
 
 /*! 
@@ -21,18 +22,30 @@ Numerov::Numerov(Potential potential, int nbox) {
 */
 void Numerov::functionSolve(double energy) {
     double c, x;
-    std::cout << "Inizio di fare fsolve";
-
     std::vector<double> pot = potential->getValues();
-    c = (2.0 * mass / hbar / hbar) * (dx * dx / 12.0);
+    pot.push_back(1.0);
 
-    //Build Numerov f(x) solution from left. 
-    for (int i = 2; i <= this->nbox; i++) {
-        x = (-this->nbox / 2 + i) * dx;
-        double value = 2 * (1. - (5 * c) * (energy - pot.at(i-1) )) * wavefunction.at(i-1) - (1. + (c) * (energy - pot.at(i-2))) * wavefunction.at(i-2);
-        value /= (1.0 + (c) * (energy - pot.at(i)));    
-        this->wavefunction.insert((this->wavefunction.begin()+i), value );
-        //std::cout << i << " " << this->wavefunction.at(i) << std::endl;
+    c = (2.0 * mass / hbar / hbar) * (dx * dx / 12.0);
+    try{
+        //Build Numerov f(x) solution from left. 
+        for (int i = 2; i <= this->nbox; i++) {
+            x = (-this->nbox / 2 + i) * dx;
+            double &value = this->wavefunction[i];
+            double &pot_1 = pot.at(i-1);
+            double &pot_2 = pot.at(i-2);
+            double &pot_a = pot.at(i);
+
+            double &wave_1 = this->wavefunction.at(i-1);
+            double &wave_2 = this->wavefunction.at(i-2);
+
+            value = 2 * (1.0 - (5 * c) * (energy - pot_1 )) * wave_1 - (1.0 + (c) * (energy - pot_2)) * wave_2;
+            value /= (1.0 + (c) * (energy - pot_a));  
+
+            //std::cout << i << " " << this->wavefunction.at(i) << std::endl;
+    }
+    }catch (const std::out_of_range & ex)
+    {
+        std::cout << "out_of_range Exception Caught :: " << ex.what() << std::endl;
     }
 }
 
@@ -51,41 +64,41 @@ void Numerov::functionSolve(double energy) {
 */
 
 double Numerov::solve(double e_min, double e_max, double e_step) {
-
     double c, x, first_step, norm, energy = 0.0;
     int n, sign;
 
     // scan energies to find when the Numerov solution is = 0 at the right extreme of the box.
     for (n = 0; n < (e_max - e_min) / e_step; n++) {
         energy = e_min + n * e_step;
-
         this->functionSolve(energy);
+        double &last_wavefunction_value = this->wavefunction[this->nbox];
 
-        std::cout << "\n\n Aftersolve\n\n";
-        if ( fabs(this->wavefunction.at(this->nbox)) < err ) {
-            std::cout << "Solution found" << this->wavefunction.at(this->nbox) << std::endl;
+        if ( fabs(last_wavefunction_value) < err ) {
+            std::cout << "Solution found" << last_wavefunction_value << std::endl;
             this->solutionEnergy = energy;
             break;
         }
 
         if (n == 0)
-            sign = (this->wavefunction.at(this->nbox) > 0) ? 1 : -1;
+            sign = (last_wavefunction_value > 0) ? 1 : -1;
 
         // when the sign changes, means that the solution for f[nbox]=0 is in in the middle, thus calls bisection rule.
-        if (sign * this->wavefunction.at(this->nbox) < 0) {
-            std::cout << "Bisection " << wavefunction.at(nbox) << std::endl;
+        if (sign * last_wavefunction_value < 0) {
+            std::cout << "Bisection " << last_wavefunction_value << std::endl;
             this->solutionEnergy = this->bisection(energy - e_step, energy + e_step);
             break;
         }
     }
 
-    for (int i = 0; i <= nbox; i++)
-        this->probability.at(i) = this->wavefunction.at(i) * this->wavefunction.at(i);
-
-    norm = trapezoidalRule(0.0, this->nbox, dx, this->probability);
-
     for (int i = 0; i <= nbox; i++) {
-        wavefunction.at(i) = wavefunction.at(i) / sqrt(norm);
+        double &value      = this->wavefunction[i];
+        double &prob_value = this->probability[i];
+        prob_value = value*value;
+    }
+    norm = trapezoidalRule(0.0, this->nbox, dx, this->probability);
+    for (int i = 0; i <= nbox; i++) {
+        double &value = this->wavefunction[i];
+        value /= sqrt(norm);
     }
 
     this->printToFile();

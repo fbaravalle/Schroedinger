@@ -20,13 +20,16 @@ void testWf(unsigned int nbox, Potential::PotentialType potType, double k,
                     .setWidth(width)
                     .build();
     
+
     Numerov solver = Numerov(V, nbox);
     solver.solve(0.0, 2.0, 0.01);
 
     numerov_Wf = solver.getWavefunction();
+    analytic_Wf = std::vector<double>(numerov_Wf.size()+1);
+    
     double E_numerov = solver.getSolutionEnergy();
     double E_analytic;
-
+    
     switch(potType) {
             case Potential::PotentialType::BOX_POTENTIAL:
                 E_analytic = box_wf(1, nbox, analytic_Wf);
@@ -105,9 +108,9 @@ namespace {
         Base base = b.build(Base::basePreset::Cartesian, 1, mesh, nbox);
 
         
-        std::vector<double> numerov_Wf = std::vector<double>(nbox);
-        std::vector<double> analytic_Wf = std::vector<double>(nbox);        
-        std::vector<double> pot(nbox);
+        std::vector<double> numerov_Wf;
+        std::vector<double> analytic_Wf;        
+        std::vector<double> pot;
 
         testWf(nbox, Potential::PotentialType::HARMONIC_OSCILLATOR, 0.500, 0.0, 0.0, base,  pot, numerov_Wf, analytic_Wf);
 
@@ -124,9 +127,9 @@ namespace {
         BasisManager::Builder b;
         Base base = b.build(Base::basePreset::Cartesian, 1, mesh, nbox);
 
-        std::vector<double> numerov_Wf = std::vector<double>(nbox);
-        std::vector<double> analytic_Wf = std::vector<double>(nbox);
-        std::vector<double> pot(nbox);
+        std::vector<double> numerov_Wf;
+        std::vector<double> analytic_Wf;
+        std::vector<double> pot;
 
         testWf(nbox, Potential::PotentialType::HARMONIC_OSCILLATOR, 1.0, 0.0, 0.0, base, pot, numerov_Wf, analytic_Wf);
 
@@ -144,9 +147,9 @@ namespace {
         BasisManager::Builder b;
         Base base = b.build(Base::basePreset::Cartesian, 1, mesh, nbox);
 
-        std::vector<double> numerov_Wf = std::vector<double>(nbox);
-        std::vector<double> analytic_Wf = std::vector<double>(nbox);        
-        std::vector<double> pot(nbox);
+        std::vector<double> numerov_Wf;
+        std::vector<double> analytic_Wf;        
+        std::vector<double> pot;
 
         testWf(nbox, Potential::PotentialType::BOX_POTENTIAL, 0.0, 0.0, 0.0, base, pot, numerov_Wf, analytic_Wf);
 
@@ -163,9 +166,9 @@ namespace {
         BasisManager::Builder b;
         Base base = b.build(Base::basePreset::Cartesian, 1, mesh, nbox);
 
-        std::vector<double> numerov_Wf = std::vector<double>(nbox);
-        std::vector<double> analytic_Wf = std::vector<double>(nbox);        
-        std::vector<double> pot(nbox);
+        std::vector<double> numerov_Wf;
+        std::vector<double> analytic_Wf;        
+        std::vector<double> pot;
 
         testWf(nbox, Potential::PotentialType::BOX_POTENTIAL, 0.0, 0.0, 0.0, base, pot, numerov_Wf, analytic_Wf);
 
@@ -183,12 +186,12 @@ namespace {
         BasisManager::Builder b;
         Base base = b.build(x_ini);
 
-        double width = 10., height = 3.;
-        std::vector<double> numerov_Wf = std::vector<double>(nbox);
-        std::vector<double> analytic_Wf = std::vector<double>(nbox);        
-        std::vector<double> pot(nbox);
+        double width = 10.0, height = 3.0;
+        std::vector<double> numerov_Wf;
+        std::vector<double> analytic_Wf;        
+        std::vector<double> pot;
 
-        testWf(nbox, Potential::PotentialType::FINITE_WELL_POTENTIAL, 0., width, height, base, pot, numerov_Wf, analytic_Wf);
+        testWf(nbox, Potential::PotentialType::FINITE_WELL_POTENTIAL, 0.0, width, height, base, pot, numerov_Wf, analytic_Wf);
 
         if (HasFailure()) {
             for (int i = 0; i < nbox; i++)
@@ -204,9 +207,9 @@ namespace {
         Base base = b.build(Base::basePreset::Cartesian, 1, mesh, nbox);
 
         double width = 7.0, height = 5.0;
-        std::vector<double> numerov_Wf = std::vector<double>(nbox);
-        std::vector<double> analytic_Wf = std::vector<double>(nbox);        
-        std::vector<double> pot(nbox);
+        std::vector<double> numerov_Wf;
+        std::vector<double> analytic_Wf;        
+        std::vector<double> pot;
 
         testWf(nbox, Potential::PotentialType::FINITE_WELL_POTENTIAL, 0.0, width, height, base, pot, numerov_Wf, analytic_Wf);
 
@@ -215,12 +218,10 @@ namespace {
                 std::cout << i << " " << numerov_Wf[i] << " " << analytic_Wf[i] << " "
                           << pot[i] << " " << analytic_Wf[i] - numerov_Wf[i] << std::endl;
         }
-    }/*
-*/
+    }
 }
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
-
     return RUN_ALL_TESTS();
 }
