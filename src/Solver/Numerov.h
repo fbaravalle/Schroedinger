@@ -28,6 +28,7 @@ class Numerov {
                 double getSolutionEnergy();
                 double solve(double, double, double);
                 void printToFile();
+	        friend std::ostream& operator<< (std::ostream& stream, Numerov& solver);
 
                 // Integrate with the trapezoidal rule method, from a to b position in a function array
                 // This is static and public in order to be used by analytical functions outside of this class

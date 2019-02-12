@@ -81,8 +81,6 @@ double Numerov::solve(double e_min, double e_max, double e_step)
         this->normalize();
         this->multiplyWavefunction();
     }
-
-    this->printToFile();
     return this->solutionEnergy;
 }
 
@@ -132,17 +130,34 @@ double Numerov::bisection(double e_min, double e_max, std::vector<double> &this_
 
 void Numerov::printToFile()
 {
-    std::ofstream myfile("wavefunction.dat");
-    if (myfile.is_open())
-    {
-
-        for (int i = 0; i < this->wavefunction.size(); i++)
+    if (this->wavefunction.size() > 0) {
+        std::ofstream myfile("wavefunction.dat");
+        if (myfile.is_open())
         {
-            myfile << i << " " << this->wavefunction.at(i) << std::endl;
+
+            for (int i = 0; i < this->wavefunction.size(); i++)
+            {
+                myfile << i << " " << this->wavefunction.at(i) << std::endl;
+            }
+            myfile.close();
         }
-        myfile.close();
     }
+
+    if (this->probability.size() > 0) {
+        std::ofstream myfile("probability.dat");
+        if (myfile.is_open())
+        {
+
+            for (int i = 0; i < this->probability.size(); i++)
+            {
+                myfile << i << " " << this->probability.at(i) << std::endl;
+            }
+            myfile.close();
+        }
+    }
+
 }
+
 
 std::vector<double> Numerov::findProbability() {
     std::vector<double> probability = this->tempWavefunction; 
@@ -186,6 +201,29 @@ double Numerov::findEnergy(double e_min, double e_max, double e_step, std::vecto
     return solutionEnergy;
 }
 
+std::ostream& operator<<(std::ostream& stream, Numerov& solver) {
+
+	// Print solution energy
+    stream << "Solution energy: " << solver.getSolutionEnergy() << std::endl;
+    
+    // Print wavefunction
+    if (solver.getWavefunction().size() > 0) {
+        stream << "Wavefunction: " << std::endl;
+        for (double x : solver.getWavefunction())
+            stream << "\t" << x << std::endl;
+    } else 
+        stream << "Wavefunction not evaluated." << std::endl;
+
+	// Print probability
+    if (solver.getProbability().size() > 0) {
+        stream << "Probability: " << std::endl;
+        for (double x : solver.getProbability())
+            stream << "\t" << x << std::endl;
+    } else 
+        stream << "Probability not evaluated." << std::endl;
+
+    return stream;
+ }
 
 // If we have separable potentials V(a, ... ,z) = V(a)+ ... +V(z), then we have a resulting wavefunction
 // that in the form W(a,...,z) = W(a) * ... * W(z). With this routine, each time a new wavefunction
